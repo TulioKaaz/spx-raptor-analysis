@@ -137,6 +137,41 @@ def stress_months(index: pd.DataFrame, worst: int = 10) -> pd.DataFrame:
     return table
 
 
+# Illustrative base portfolios (assumption, not a recommendation): the Raptor
+# slice is funded from cash (CDI), the most common source of a new allocation.
+BASE_PORTFOLIOS = {
+    "moderate": {"cdi": 0.60, "imab_index": 0.25, "ibovespa_index": 0.15},
+    "aggressive": {"cdi": 0.35, "imab_index": 0.25, "ibovespa_index": 0.40},
+}
+# Historical drawdown is a floor for the worst case, not a ceiling.
+STRESS_MULTIPLIER = 1.5
+
+
+def portfolio_sizing(index: pd.DataFrame, weights=(0, 0.025, 0.05, 0.075, 0.10, 0.15)) -> pd.DataFrame:
+    returns = index.pct_change().dropna()
+    raptor_stress_loss = -max_drawdown(index["raptor_feeder"])["max_drawdown"] * STRESS_MULTIPLIER
+    rows = []
+    for profile, base in BASE_PORTFOLIOS.items():
+        for weight in weights:
+            allocation = dict(base, cdi=base["cdi"] - weight, raptor_feeder=weight)
+            portfolio = sum(returns[asset] * share for asset, share in allocation.items())
+            level = (1 + portfolio).cumprod()
+            excess = portfolio - returns["cdi"]
+            rows.append(
+                {
+                    "profile": profile,
+                    "raptor_weight": weight,
+                    "annual_return": annualized_return(pd.concat([pd.Series([1.0]), level])),
+                    "volatility": portfolio.std() * np.sqrt(MONTHS_PER_YEAR),
+                    "sharpe": excess.mean() / excess.std() * np.sqrt(MONTHS_PER_YEAR),
+                    "max_drawdown": (level / level.cummax() - 1).min(),
+                    "raptor_stress_loss": weight * raptor_stress_loss,
+                    "min_wealth_for_minimum_ticket": 100_000 / weight if weight else np.nan,
+                }
+            )
+    return pd.DataFrame(rows).set_index(["profile", "raptor_weight"])
+
+
 def daily_event(quotas: pd.DataFrame, day: str) -> pd.Series:
     prices = quotas.pivot(index="date", columns="fund", values="quota")
     return prices.pct_change().loc[day]
