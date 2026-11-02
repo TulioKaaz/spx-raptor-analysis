@@ -1,7 +1,7 @@
 """Performance and risk metrics on monthly data.
 
-Everything is monthly because Raptor only reported a month-end quota until
-2024; daily data would compare a smoothed fund against daily-marked markets.
+Everything is monthly because Raptor only reported a month-end quota to CVM
+until 2024; daily data would compare a smoothed fund against daily-marked markets.
 Returns are before income tax (quotas are net of fees, gross of tax).
 """
 
