@@ -2,7 +2,7 @@
 
 Análise do fundo multimercado SPX Raptor só com dados públicos: 16 anos de cotas do informe diário da CVM e séries do Banco Central. A pergunta é a de um consultor de investimentos: pra que cliente esse fundo serve, e quanto da carteira alocar nele?
 
-Resposta curta: posição satélite de 5 a 10% da carteira, pra investidor qualificado de horizonte longo, com acompanhamento de perto da gestora.
+Estudo educativo sobre como analisar um fundo: retorno real, risco e papel na carteira. Não é recomendação de investimento.
 
 ## Principais resultados
 
@@ -73,6 +73,6 @@ Ibovespa e IMA-B entram como fundos, e não como índices: são produtos que um 
 
 ## Sobre
 
-Feito como desafio técnico de um processo seletivo de estágio em consultoria de investimentos. Desenvolvido com Claude Code: a IA escreveu o código, e as decisões de método e a revisão de cada etapa foram minhas.
+Estudo de análise de fundos com dados públicos. Desenvolvido com Claude Code: a IA escreveu o código, e as decisões de método e a revisão de cada etapa foram minhas.
 
 Licença: [GPLv3](LICENSE).
